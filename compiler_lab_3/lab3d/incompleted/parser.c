@@ -516,10 +516,6 @@ void compileArgument(Object* param) {
 
 void compileArguments(ObjectNode* paramList) {
   //TODO: parse a list of arguments, check the consistency of the arguments and the given parameters
-  // if(paramList != NULL && lookAhead->tokenType != SB_LPAR) {
-  //       error(ERR_PARAMETERS_ARGUMENTS_INCONSISTENCY, currentToken->lineNo, currentToken->colNo); 
-  // }
-
   switch (lookAhead->tokenType) {
   case SB_LPAR:
     eat(SB_LPAR);
@@ -728,7 +724,6 @@ void compileTerm2(void) {
 
 Type* compileFactor(void) {
   // TODO: parse a factor and return the factor's type
-
   Object* obj;
   Type* type;
 
@@ -744,16 +739,9 @@ Type* compileFactor(void) {
   case TK_IDENT:
     eat(TK_IDENT);
     // check if the identifier is declared
-    //obj = checkDeclaredIdent(currentToken->string);
-    obj = NULL;
-    Scope* scope = symtab->currentScope;
-    while (scope != NULL) {
-      obj = findObject(scope->objList, currentToken->string);
-      if (obj != NULL) break;
-      scope = scope->outer;
-    }
+    obj = checkDeclaredIdent(currentToken->string);
     if (obj == NULL) {
-      type = makeIntType();  // Assume undeclared identifiers are integers to continue parsing
+      type = makeIntType();
     } else {
       switch (obj->kind) {
       case OBJ_CONSTANT:
